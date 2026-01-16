@@ -9,7 +9,6 @@ export default function Home() {
 
   const fetchRooms = async () => {
     const supabase = getSupabaseClient()
-
     let query = supabase.from('rooms').select('*')
 
     if (location) {
@@ -34,15 +33,12 @@ export default function Home() {
         onChange={(e) => setLocation(e.target.value)}
       />
 
-      <button
-        onClick={fetchRooms}
-        className="bg-black text-white px-4 py-2 mb-6"
-      >
+      <button onClick={fetchRooms} className="bg-black text-white px-4 py-2 mb-6">
         Search
       </button>
 
       <div className="grid md:grid-cols-3 gap-4">
-        {rooms.map(room => (
+        {rooms.map((room) => (
           <div key={room.id} className="border p-4 rounded">
             <h2 className="font-bold">{room.title}</h2>
             <p>{room.location}</p>

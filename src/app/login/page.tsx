@@ -11,7 +11,13 @@ export default function LoginPage() {
   const handleLogin = async () => {
     const supabase = getSupabaseClient()
 
-    const { error } = await supabase.auth.signInWithOtp({ email })
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo:
+          typeof window !== 'undefined' ? window.location.origin : undefined,
+      },
+    })
 
     if (error) alert(error.message)
     else {
@@ -29,7 +35,7 @@ export default function LoginPage() {
           type="email"
           placeholder="Enter email"
           className="border p-2 w-full"
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <button
