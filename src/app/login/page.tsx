@@ -1,28 +1,30 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { getSupabaseClient } from '@/lib/supabaseClient'
+import { supabase } from '@/lib/supabaseClient'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
-  const router = useRouter()
+  const [loading, setLoading] = useState(false)
 
   const handleLogin = async () => {
-    const supabase = getSupabaseClient()
+    setLoading(true)
 
-    const { error } = await supabase.auth.signInWithOtp({
+    const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo:
-          typeof window !== 'undefined' ? window.location.origin : undefined,
+        emailRedirectTo: 'https://room-finder-silk.vercel.app',
       },
     })
 
-    if (error) alert(error.message)
-    else {
-      alert('Check your email for login link')
-      router.push('/')
+    setLoading(false)
+
+    if (error) {
+      console.error(error)
+      alert(error.message)
+    } else {
+      alert('Magic link sent. Check your email.')
+      console.log('OTP response:', data)
     }
   }
 
@@ -35,14 +37,16 @@ export default function LoginPage() {
           type="email"
           placeholder="Enter email"
           className="border p-2 w-full"
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
         <button
           onClick={handleLogin}
+          disabled={loading}
           className="bg-black text-white p-2 w-full"
         >
-          Send OTP
+          {loading ? 'Sending...' : 'Send OTP'}
         </button>
       </div>
     </div>
